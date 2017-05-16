@@ -31,7 +31,7 @@ float computeAngle (Coord mid, Coord left, Coord right) {
 		left.x -= SMALL_NUMBER;
 	}
 
-	if (right.x - mid.x) {
+	if (right.x == mid.x) {
 		right.x -= SMALL_NUMBER;
 	}
 
@@ -39,7 +39,6 @@ float computeAngle (Coord mid, Coord left, Coord right) {
 		gradMR = (mid.y - right.y) / (mid.x - right.x);
 	float eq = abs ((gradML - gradMR) / (1+(gradMR*gradML)));
 
-	//return min (angle, 180 - angle);
 	return atan (eq) * deg;
 }
 
