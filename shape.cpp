@@ -3,6 +3,7 @@
 #include <vector>
 #include <algorithm>
 #include <cmath>
+#include <cstdlib>
 #define PI 3.14159265
 
 using namespace std;
@@ -22,7 +23,13 @@ bool areFloatValuesSimilar (float a, float b) {
 }
 
 float computeAngle (Coord mid, Coord left, Coord right) {
+	const float deg = 180.0f / PI;
+	float gradML = (left.y - mid.y) / (left.x - mid.x),
+		gradMR = (mid.y - right.y) / (mid.x - right.x);
+	float thetaML = atan (gradML) * deg, thetaMR = atan (gradMR) * deg;
+	float angle = abs (thetaML - thetaMR);
 
+	return min (angle, 180 - angle);
 }
 
 vector< float > getInteriorAngles (vector< Coord >& coords) {
