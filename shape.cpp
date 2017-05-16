@@ -43,6 +43,11 @@ float computeAngle (Coord mid, Coord left, Coord right) {
 	return atan (eq) * deg;
 }
 
+float computeEdgeLength (Coord a, Coord b) {
+	float l1 = b.x - a.x, l2 = b.y - a.y;
+	return sqrt ((l1*l1) + (l2*l2));
+}
+
 vector< float > getInteriorAngles (vector< Coord >& coords) {
 	vector< float > angles = vector< float > ();
 	const unsigned int numOfCoords = coords.size ();
@@ -117,10 +122,38 @@ string identifyQuadrilateral (vector< Coord >& coords) {
 }
 
 bool isRegularPentagon (vector< Coord >& coords) {
+	const vector< float > interiorAngles = getInteriorAngles (coords);
+	const float error = 4.0f;
+
+	// step 1: check if all interior angles are same (90 degree)
+	/*if (!areValuesInCloseProximity (interiorAngles [0], 90.0f, error)) {
+		return notAValidShape;
+	}*/
+
+	for (int i = 1; i < interiorAngles.size (); i++) {
+		if (!areValuesInCloseProximity (interiorAngles [0], interiorAngles [i], error)) {
+			return false;
+		}
+	}
+
 	return true;
 }
 
 bool isRegularHexagon (vector< Coord >& coords) {
+	const vector< float > interiorAngles = getInteriorAngles (coords);
+	const float error = 4.0f;
+
+	// step 1: check if all interior angles are same (90 degree)
+	/*if (!areValuesInCloseProximity (interiorAngles [0], 90.0f, error)) {
+		return notAValidShape;
+	}*/
+
+	for (int i = 1; i < interiorAngles.size (); i++) {
+		if (!areValuesInCloseProximity (interiorAngles [0], interiorAngles [i], error)) {
+			return false;
+		}
+	}
+
 	return true;
 }
 
