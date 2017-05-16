@@ -8,6 +8,7 @@
 #define SMALL_NUMBER 1e-5
 
 using namespace std;
+const string notAValidShape = "Not a valid Shape";
 
 class Coord {
 	public:
@@ -19,8 +20,8 @@ class Coord {
 	}
 };
 
-bool areFloatValuesSimilar (float a, float b) {
-	return abs (a - b) < 5.0f;
+bool areValuesInCloseProximity (float a, float b, float maxDiff) {
+	return abs (a - b) < maxDiff;
 }
 
 float computeAngle (Coord mid, Coord left, Coord right) {
@@ -62,17 +63,18 @@ vector< float > getInteriorAngles (vector< Coord >& coords) {
 string identifyTriangle (vector< Coord >& coords) {
 	const string triangle = "Triangle";
 	const vector< float > interiorAngles = getInteriorAngles (coords);
+	const float error = 4.0f;
 	unsigned int flags = 0;
 
-	if (areFloatValuesSimilar (interiorAngles [0], interiorAngles [1])) {
+	if (areValuesInCloseProximity (interiorAngles [0], interiorAngles [1], error)) {
 		flags |= 1;
 	}
 
-	if (areFloatValuesSimilar (interiorAngles [0], interiorAngles [2])) {
+	if (areValuesInCloseProximity (interiorAngles [0], interiorAngles [2], error)) {
 		flags |= 2;
 	}
 
-	if (areFloatValuesSimilar (interiorAngles [1], interiorAngles [2])) {
+	if (areValuesInCloseProximity (interiorAngles [1], interiorAngles [2], error)) {
 		flags |= 4;
 	}
 
@@ -89,7 +91,29 @@ string identifyTriangle (vector< Coord >& coords) {
 
 
 string identifyQuadrilateral (vector< Coord >& coords) {
-	return "ss";
+	const vector< float > interiorAngles = getInteriorAngles (coords);
+	const float error = 4.0f;
+
+	// step 1: check if all interior angles are same (90 degree)
+	/*if (!areValuesInCloseProximity (interiorAngles [0], 90.0f, error)) {
+		return notAValidShape;
+	}*/
+
+	for (int i = 1; i < interiorAngles.size (); i++) {
+		if (!areValuesInCloseProximity (interiorAngles [0], interiorAngles [i], error)) {
+			return notAValidShape;
+		}
+	}
+
+	// Step 2: Compute Aspect ratio to determine whether quad. is a square or rectangle
+	const float firstEdgeLength = computeEdgeLength (coords [0], coords [1]),
+		secondEdgeLength = computeEdgeLength (coords [1], coords [2]);
+
+	if (areValuesInCloseProximity (firstEdgeLength, secondEdgeLength, 5.0f)) {
+		return "Square";
+	}
+
+	return "Rectangle";
 }
 
 bool isRegularPentagon (vector< Coord >& coords) {
@@ -102,8 +126,6 @@ bool isRegularHexagon (vector< Coord >& coords) {
 
 
 string detectShapeDecisionTree (vector< Coord >& coords) {
-	const string notAValidShape = "Not a valid Shape";
-
 	switch (coords.size ()) {
 		case 0: case 3:
 			return notAValidShape;
