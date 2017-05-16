@@ -103,7 +103,7 @@ string identifyQuadrilateral (vector< Coord >& coords) {
 	/*if (!areValuesInCloseProximity (interiorAngles [0], 90.0f, error)) {
 		return notAValidShape;
 	}*/
-
+	cout << interiorAngles [0] << " " << interiorAngles [1] << " " << interiorAngles [2] << " " << interiorAngles [3] << endl;
 	for (int i = 1; i < interiorAngles.size (); i++) {
 		if (!areValuesInCloseProximity (interiorAngles [0], interiorAngles [i], error)) {
 			return notAValidShape;
@@ -182,10 +182,37 @@ string detectShapeDecisionTree (vector< Coord >& coords) {
 int main () {
 	vector< Coord > coords = vector< Coord > ();
 
-	coords.push_back (Coord (10, 10));
-	coords.push_back (Coord (10, 40));
-	coords.push_back (Coord (50, 10));
-	coords.push_back (Coord (50, 40));
+	/* Pentagon
+	coords.push_back (Coord (550,450));
+	coords.push_back (Coord (455,519));
+	coords.push_back (Coord (491,631));
+	coords.push_back (Coord (609,631));
+	coords.push_back (Coord (645,519));
+	coords.push_back (Coord (550,450));
+	*/
+
+	/* Hexagon
+	coords.push_back (Coord (600,463));
+	coords.push_back (Coord (500,463));
+	coords.push_back (Coord (450,550));
+	coords.push_back (Coord (500,637));
+	coords.push_back (Coord (600,637));
+	coords.push_back (Coord (650,550));
+	coords.push_back (Coord (600,463));
+	*/
+
+	/* Quadrilateral
+	coords.push_back (Coord (200,200));
+	coords.push_back (Coord (500,200));
+	coords.push_back (Coord (500,330));
+	coords.push_back (Coord (200,330));
+	coords.push_back (Coord (200,200));
+	*/
+
+	coords.push_back (Coord (550,450));
+	coords.push_back (Coord (463,600));
+	coords.push_back (Coord (637,600));
+	coords.push_back (Coord (550,450));
 
 	cout << detectShapeDecisionTree (coords) << endl;
 }
