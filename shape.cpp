@@ -1,3 +1,7 @@
+#include <string.h>
+#include <GL/glut.h>
+#include <GL/glu.h>
+#include <GL/gl.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -8,6 +12,8 @@
 #define SMALL_NUMBER 1e-5
 
 using namespace std;
+
+/*********************************************************************************/
 const string notAValidShape = "Not a valid Shape";
 
 class Coord {
@@ -18,6 +24,8 @@ class Coord {
 		x = a;
 		y = b;
 	}
+
+	Coord () {}
 };
 
 bool areValuesInCloseProximity (float a, float b, float maxDiff) {
@@ -68,7 +76,7 @@ vector< float > getInteriorAngles (vector< Coord >& coords) {
 string identifyTriangle (vector< Coord >& coords) {
 	const string triangle = "Triangle";
 	const vector< float > interiorAngles = getInteriorAngles (coords);
-	const float error = 4.0f;
+	const float error = 10.0f;
 	unsigned int flags = 0;
 
 	if (areValuesInCloseProximity (interiorAngles [0], interiorAngles [1], error)) {
@@ -103,7 +111,7 @@ string identifyQuadrilateral (vector< Coord >& coords) {
 	/*if (!areValuesInCloseProximity (interiorAngles [0], 90.0f, error)) {
 		return notAValidShape;
 	}*/
-	cout << interiorAngles [0] << " " << interiorAngles [1] << " " << interiorAngles [2] << " " << interiorAngles [3] << endl;
+
 	for (int i = 1; i < interiorAngles.size (); i++) {
 		if (!areValuesInCloseProximity (interiorAngles [0], interiorAngles [i], error)) {
 			return notAValidShape;
@@ -179,6 +187,142 @@ string detectShapeDecisionTree (vector< Coord >& coords) {
 	}
 }
 
+/*********************************************************************************/
+
+Coord w;
+Coord s;
+
+vector< Coord > coords = vector< Coord > ();
+int mouseClickFlag = 0,userFlag=0,finalcoords;
+/* Initialize OpenGL Graphics */
+void initGL() {
+   glClearColor(0.0,1.0,1.0,0);
+	glColor3f(0.0,0.0,0.0);
+	gluOrtho2D(0 , 640 , 0 , 480);
+}
+
+
+
+void displayText( float x, float y, int r, int g, int b, const char *string ) {
+	int j = strlen( string );
+
+	glColor3f( r, g, b );
+	glRasterPos2f( x, y );
+	for( int i = 0; i < j; i++ ) {
+		glutBitmapCharacter( GLUT_BITMAP_TIMES_ROMAN_24, string[i] );
+	}
+	glFlush();
+}
+void lineDraw(Coord p, Coord q){
+	glEnable(GL_LINE_SMOOTH);
+	glLineWidth(2.5);
+	glColor3f(0.0,0.0,0.0);
+	glBegin(GL_LINES);
+	glVertex2f(p.x,p.y);
+	glVertex2f(q.x,q.y);
+	glEnd();
+	glFlush();
+}
+
+void onMouseClickCallback(int button, int state, int x, int y) {	
+if(userFlag==1){
+    if(button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+    		y = 480 - y;
+		Coord mycoord = Coord(x,y);
+		coords.push_back(mycoord);
+		cout<<mycoord.x<<" "<<mycoord.y<<"\n";
+		cout<<coords[0].x<<" "<<coords[0].y;
+		glPointSize(5);
+		glColor3f(1.0,0.0,0.0);
+		glBegin(GL_POINTS);
+		glVertex2d(x, y);
+		glEnd();
+		glFlush();
+		switch(mouseClickFlag){
+			case 0: mouseClickFlag=1;
+				w.x=x;
+				w.y=y;
+				break;
+			case 1: mouseClickFlag=2;
+				s.x=x;
+				s.y=y;
+				lineDraw(w,s);
+				break;
+			case 2: w.x=s.x;
+				w.y=s.y;
+				s.x=x;
+				s.y=y;
+				mouseClickFlag=2;
+				lineDraw(w,s);
+				break;
+				
+		}				
+
+    	
+	}
+}
+else
+{}
+}
+
+
+
+void keyboard(unsigned char key, int x, int y)
+{
+	if (key == 32) {
+	if(userFlag == 0)
+	{
+		glClear(GL_COLOR_BUFFER_BIT);
+		glutSwapBuffers();
+		userFlag=1;
+
+	} else if(userFlag==1){
+	glClear(GL_COLOR_BUFFER_BIT);
+	glutSwapBuffers();
+	finalcoords = coords.size();
+	coords[finalcoords-1].x=coords[0].x;
+	coords[finalcoords-1].y=coords[0].y;
+
+	cout << endl << "*********THE SHAPE IS**********" << endl << detectShapeDecisionTree (coords) << endl;
+	
+	}
+	}
+
+}
+
+void display() {
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear color and depth buffers
+   glMatrixMode(GL_MODELVIEW);     // To operate on model-view matrix
+   displayText(220,450,0,0,0,"Mini Project in OpenGL");
+   displayText(265,430,0,0,0,"on the topic");
+   displayText(185,410,0,0,0,"Shape Detection - Open Challenge");
+   displayText(225,370,0,0,0,"under the guidance of");
+   displayText(235,340,0,0,0,"Mr. Pankaj Badoni");
+   displayText(225,320,0,0,0,"(Assistant Proffessor)");
+   displayText(135,300,0,0,0,"School of Computer Science and Engineering");
+   displayText(255,210,0,0,0,"Submitted by");
+   displayText(120,160,0,0,0,"Vatsal Jain");
+   displayText(400,160,0,0,0,"Raghav Dua");
+
+}
+
+int main(int argc, char** argv) {
+   Coord w;
+   Coord s;
+   glutInit(&argc, argv);            // Initialize GLUT
+   glutInitDisplayMode(GLUT_SINGLE); // Enable single buffered mode
+   glutInitWindowSize(640, 480);   // Set the window's initial width & height
+   glutInitWindowPosition(100, 100); // Position the window's initial top-left corner
+   glutCreateWindow("Object Guessing Algorithm");          // Create window with the given title
+   glutDisplayFunc(display);       // Register callback handler for window re-paint event
+   glutKeyboardFunc(keyboard);
+   glutMouseFunc(onMouseClickCallback);
+   initGL();                       // Our own OpenGL initialization
+   glutMainLoop();                 // Enter the infinite event-processing loop
+   return 0;
+}
+
+/*
 int main () {
 	vector< Coord > coords = vector< Coord > ();
 
@@ -189,7 +333,7 @@ int main () {
 	coords.push_back (Coord (609,631));
 	coords.push_back (Coord (645,519));
 	coords.push_back (Coord (550,450));
-	*/
+	*
 
 	/* Hexagon
 	coords.push_back (Coord (600,463));
@@ -199,7 +343,7 @@ int main () {
 	coords.push_back (Coord (600,637));
 	coords.push_back (Coord (650,550));
 	coords.push_back (Coord (600,463));
-	*/
+	*
 
 	/* Quadrilateral
 	coords.push_back (Coord (200,200));
@@ -207,7 +351,7 @@ int main () {
 	coords.push_back (Coord (500,330));
 	coords.push_back (Coord (200,330));
 	coords.push_back (Coord (200,200));
-	*/
+	*
 
 	coords.push_back (Coord (550,450));
 	coords.push_back (Coord (463,600));
@@ -216,3 +360,4 @@ int main () {
 
 	cout << detectShapeDecisionTree (coords) << endl;
 }
+*/
