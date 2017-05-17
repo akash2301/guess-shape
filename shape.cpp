@@ -122,7 +122,7 @@ string identifyQuadrilateral (vector< Coord >& coords) {
 	const float firstEdgeLength = computeEdgeLength (coords [0], coords [1]),
 		secondEdgeLength = computeEdgeLength (coords [1], coords [2]);
 
-	if (areValuesInCloseProximity (firstEdgeLength, secondEdgeLength, 5.0f)) {
+	if (areValuesInCloseProximity (firstEdgeLength, secondEdgeLength, 10.0f)) {
 		return "Square";
 	}
 
@@ -231,7 +231,7 @@ if(userFlag==1){
 		Coord mycoord = Coord(x,y);
 		coords.push_back(mycoord);
 		cout<<mycoord.x<<" "<<mycoord.y<<"\n";
-		cout<<coords[0].x<<" "<<coords[0].y;
+		//cout<<coords[0].x<<" "<<coords[0].y;
 		glPointSize(5);
 		glColor3f(1.0,0.0,0.0);
 		glBegin(GL_POINTS);
@@ -266,6 +266,29 @@ else
 }
 
 
+void axes () {
+   		float xmin=0.0f, xmax=640.0f, dx=20.0, x;
+float ymin=0, ymax=480.0f, dy=20.0, y;
+
+   glColor3f (0.75,0.75,0.75);
+   glBegin(GL_LINES);
+
+for(x=xmin; x<=xmax; x+=dx)
+{
+for(y=ymin; y<=ymax; y+=dy)
+{
+glVertex3f(x, ymin, 0.0);
+glVertex3f(x, ymax, 0.0);
+
+glVertex3f(xmin, y, 0.0);
+glVertex3f(xmax, y, 0.0);
+}
+}
+
+glEnd();
+glFlush();
+   }
+
 
 void keyboard(unsigned char key, int x, int y)
 {
@@ -274,6 +297,7 @@ void keyboard(unsigned char key, int x, int y)
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 		glutSwapBuffers();
+		axes();
 		userFlag=1;
 
 	} else if(userFlag==1){
@@ -286,6 +310,7 @@ void keyboard(unsigned char key, int x, int y)
 	cout << endl << "*********THE SHAPE IS**********" << endl << detectShapeDecisionTree (coords) << endl;
 
 	coords.clear ();
+	axes();
 	mouseClickFlag = 0;
 	
 	}
