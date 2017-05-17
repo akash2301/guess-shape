@@ -76,7 +76,7 @@ vector< float > getInteriorAngles (vector< Coord >& coords) {
 string identifyTriangle (vector< Coord >& coords) {
 	const string triangle = "Triangle";
 	const vector< float > interiorAngles = getInteriorAngles (coords);
-	const float error = 10.0f;
+	const float error = 7.0f;
 	unsigned int flags = 0;
 
 	if (areValuesInCloseProximity (interiorAngles [0], interiorAngles [1], error)) {
@@ -284,6 +284,9 @@ void keyboard(unsigned char key, int x, int y)
 	coords[finalcoords-1].y=coords[0].y;
 
 	cout << endl << "*********THE SHAPE IS**********" << endl << detectShapeDecisionTree (coords) << endl;
+
+	coords.clear ();
+	mouseClickFlag = 0;
 	
 	}
 	}
