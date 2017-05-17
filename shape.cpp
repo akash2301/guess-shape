@@ -105,7 +105,7 @@ string identifyTriangle (vector< Coord >& coords) {
 
 string identifyQuadrilateral (vector< Coord >& coords) {
 	const vector< float > interiorAngles = getInteriorAngles (coords);
-	const float error = 4.0f;
+	const float error = 7.0f;
 
 	// step 1: check if all interior angles are same (90 degree)
 	/*if (!areValuesInCloseProximity (interiorAngles [0], 90.0f, error)) {
@@ -131,7 +131,7 @@ string identifyQuadrilateral (vector< Coord >& coords) {
 
 bool isRegularPentagon (vector< Coord >& coords) {
 	const vector< float > interiorAngles = getInteriorAngles (coords);
-	const float error = 4.0f;
+	const float error = 20.0f;
 
 	// step 1: check if all interior angles are same (90 degree)
 	/*if (!areValuesInCloseProximity (interiorAngles [0], 90.0f, error)) {
@@ -149,7 +149,7 @@ bool isRegularPentagon (vector< Coord >& coords) {
 
 bool isRegularHexagon (vector< Coord >& coords) {
 	const vector< float > interiorAngles = getInteriorAngles (coords);
-	const float error = 4.0f;
+	const float error = 20.0f;
 
 	// step 1: check if all interior angles are same (90 degree)
 	/*if (!areValuesInCloseProximity (interiorAngles [0], 90.0f, error)) {
@@ -353,10 +353,12 @@ int main () {
 	coords.push_back (Coord (200,200));
 	*
 
+	/* Triangle
 	coords.push_back (Coord (550,450));
 	coords.push_back (Coord (463,600));
 	coords.push_back (Coord (637,600));
 	coords.push_back (Coord (550,450));
+	*
 
 	cout << detectShapeDecisionTree (coords) << endl;
 }
